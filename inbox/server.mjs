@@ -67,7 +67,8 @@ async function listarNichos() {
       out.push({ slug, nicho: d.nicho, veredicto: r.veredicto, ganadores: r.ganadores, canales: (d.canales || []).length });
     } catch { /* un JSON roto no tumba la lista */ }
   }
-  return out.sort((a, b) => a.nicho.localeCompare(b.nicho));
+  // Un JSON sin `nicho` no puede tumbar la lista entera: se ordena por su archivo.
+  return out.sort((a, b) => String(a.nicho ?? a.slug).localeCompare(String(b.nicho ?? b.slug)));
 }
 
 const rutas = {
@@ -91,6 +92,7 @@ const rutas = {
     let d;
     try { d = await leerNicho(slug); }
     catch { d = { nicho: body.nicho || slug, notas: body.notas || '', canales: [] }; }
+    if (!Array.isArray(d.canales)) d.canales = [];
     if (body.nicho) d.nicho = body.nicho;
     if (body.notas !== undefined) d.notas = body.notas;
 
@@ -106,7 +108,9 @@ const rutas = {
         primerVideo: String(c.primerVideo || '').slice(0, 10),
       });
     }
-    if (Number.isInteger(body.borrarCanal)) d.canales.splice(body.borrarCanal, 1);
+    // Solo índices que existen: splice(-1, 1) borraría el ÚLTIMO canal sin querer.
+    const i = body.borrarCanal;
+    if (Number.isInteger(i) && i >= 0 && i < d.canales.length) d.canales.splice(i, 1);
 
     await writeFile(rutaSegura('nichos', slug, '.json'), JSON.stringify(d, null, 2) + '\n', 'utf8');
     return { ok: true, slug, ...validar(d) };

@@ -35,7 +35,7 @@ A reference channel is a **winner** if:
 | 1 + 2 | At least **5 winning channels** |
 | 3 | Every reference channel **under 12 months old** |
 | 4 | Winners **in English**: that's where you copy the format that already works |
-| + | At least **1 competitor in Spanish**, to prove there's demand |
+| + | At least **1 competitor in Spanish**, to prove there's demand (without one, the best you get is ACCEPTABLE) |
 
 ```bash
 node scripts/validar-nicho.mjs nichos-ejemplo/ejemplo.json

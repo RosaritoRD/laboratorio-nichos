@@ -37,9 +37,15 @@ export function validar(d, hoy = new Date()) {
   };
 
   let veredicto, mensaje;
-  if (filtros.ganadores.ok && filtros.ingles.ok) {
+  if (filtros.ganadores.ok && filtros.ingles.ok && filtros.demanda.ok) {
     veredicto = 'ADELANTE';
     mensaje = 'El nicho pasa los filtros. A partir de aquí el trabajo es volumen.';
+  } else if (filtros.ganadores.ok && filtros.ingles.ok) {
+    // Sin un solo competidor en español no está probado que el público hispano
+    // lo busque: el formato funciona en inglés, la demanda aquí es una suposición.
+    veredicto = 'ACEPTABLE';
+    mensaje = 'El formato funciona en inglés, pero no hay ningún competidor en español. '
+            + 'Encuentra al menos uno antes de lanzar: es la prueba de que hay demanda.';
   } else if (filtros.ganadores.ok) {
     veredicto = 'ACEPTABLE';
     mensaje = `Hay ${ganadores.length} ganadores pero solo ${enIngles.length} en inglés. `
