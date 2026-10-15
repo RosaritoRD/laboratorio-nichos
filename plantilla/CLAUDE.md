@@ -1,13 +1,13 @@
 # <NICHO>
 
-## Qué es
-(Describe el nicho en 2 líneas: para quién es el video y qué formato.)
+## What it is
+(Describe the niche in 2 lines: who the video is for and what format.)
 
-## Estado
-(Idea / probando / publicando)
+## Status
+(Idea / testing / publishing)
 
 ## Pipeline
-(Fuente -> edición -> render -> publicación. Rellenar cuando exista.)
+(Source -> editing -> render -> publishing. Fill in once it exists.)
 
-## No mezclar
-Este proyecto es independiente de tus otros proyectos y de los demás nichos.
+## Don't mix
+This project is independent of your other projects and of the other niches.

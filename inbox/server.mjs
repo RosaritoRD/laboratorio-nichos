@@ -1,14 +1,14 @@
-/* Bandeja de captura del proyecto de YouTube.
+/* Capture inbox for the YouTube project.
 
-   Para qué existe: capturar desde el móvil (transcripciones, datos de canales
-   mientras navegas YouTube con VidIQ) sin abrir una terminal. Lo que se guarda
-   aquí lo trabaja después Claude Code por Termius.
+   Why it exists: capture from your phone (transcripts, channel data while you
+   browse YouTube with VidIQ) without opening a terminal. Whatever is saved here
+   gets worked on later by Claude Code over SSH.
 
-   Lo que NO hace, a propósito: ejecutar comandos, leer fuera de BASE, ni
-   escribir fuera de las carpetas notas/ y nichos/. No hay shell detrás de esto.
+   What it does NOT do, on purpose: run commands, read outside BASE, or write
+   outside the notas/ and nichos/ folders. There is no shell behind this.
 
-   La autenticación NO está aquí: la pone oauth2-proxy delante. Este servidor
-   solo escucha en la red interna de Docker y jamás se publica directo.
+   Authentication is NOT here: oauth2-proxy sits in front. This server only
+   listens on the internal Docker network and is never exposed directly.
 */
 import { createServer } from 'node:http';
 import { readFile, writeFile, readdir, mkdir } from 'node:fs/promises';
@@ -18,22 +18,22 @@ import { nichosPorTema, ideasDeTitulo, temas } from '../scripts/banco-ideas.mjs'
 
 const BASE   = process.env.PROYECTO_DIR || '/proyecto';
 const PUERTO = Number(process.env.PORT || 8080);
-const MAX_BODY = 2_000_000;                     // 2 MB: una transcripción larga cabe
-const SLUG = /^[a-z0-9][a-z0-9-]{0,59}$/;       // sin puntos ni barras: corta el path traversal
+const MAX_BODY = 2_000_000;                     // 2 MB: a long transcript fits
+const SLUG = /^[a-z0-9][a-z0-9-]{0,59}$/;       // no dots or slashes: blocks path traversal
 
 const dir = (sub) => path.join(BASE, sub);
 
-/* Toda escritura pasa por aquí. Resuelve la ruta y comprueba que siga dentro
-   de la subcarpeta permitida; si no, no escribe. */
+/* Every write goes through here. It resolves the path and checks it is still
+   inside the allowed subfolder; if not, nothing is written. */
 function rutaSegura(sub, slug, ext) {
-  if (!SLUG.test(slug)) throw new Error('nombre inválido: ' + slug);
+  if (!SLUG.test(slug)) throw new Error('invalid name: ' + slug);
   const destino = path.resolve(dir(sub), slug + ext);
-  if (path.dirname(destino) !== path.resolve(dir(sub))) throw new Error('ruta fuera de lugar');
+  if (path.dirname(destino) !== path.resolve(dir(sub))) throw new Error('path out of bounds');
   return destino;
 }
 
 const slugify = (s) => String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
-  .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60) || 'sin-titulo';
+  .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60) || 'untitled';
 
 const json = (res, code, obj) => {
   const b = JSON.stringify(obj);
@@ -46,10 +46,10 @@ function leerBody(req) {
     let n = 0; const partes = [];
     req.on('data', (c) => {
       n += c.length;
-      if (n > MAX_BODY) { fail(new Error('demasiado grande')); req.destroy(); return; }
+      if (n > MAX_BODY) { fail(new Error('too large')); req.destroy(); return; }
       partes.push(c);
     });
-    req.on('end', () => { try { ok(JSON.parse(Buffer.concat(partes).toString('utf8') || '{}')); } catch { fail(new Error('json inválido')); } });
+    req.on('end', () => { try { ok(JSON.parse(Buffer.concat(partes).toString('utf8') || '{}')); } catch { fail(new Error('invalid json')); } });
     req.on('error', fail);
   });
 }
@@ -65,9 +65,9 @@ async function listarNichos() {
       const d = await leerNicho(slug);
       const r = validar(d);
       out.push({ slug, nicho: d.nicho, veredicto: r.veredicto, ganadores: r.ganadores, canales: (d.canales || []).length });
-    } catch { /* un JSON roto no tumba la lista */ }
+    } catch { /* one broken JSON file does not break the list */ }
   }
-  // Un JSON sin `nicho` no puede tumbar la lista entera: se ordena por su archivo.
+  // A JSON without `nicho` must not break the whole list: sort it by its file name.
   return out.sort((a, b) => String(a.nicho ?? a.slug).localeCompare(String(b.nicho ?? b.slug)));
 }
 
@@ -79,10 +79,10 @@ const rutas = {
 
   'POST /api/nota': async (body) => {
     const texto = String(body.texto || '').trim();
-    if (!texto) throw new Error('la nota está vacía');
+    if (!texto) throw new Error('the note is empty');
     const slug = slugify(body.titulo || 'nota-' + new Date().toISOString().slice(0, 10));
     const destino = rutaSegura('notas', slug, '.md');
-    const cabecera = `# ${body.titulo || slug}\n\nCapturado ${new Date().toISOString().slice(0, 16).replace('T', ' ')} desde la bandeja.\n\n---\n\n`;
+    const cabecera = `# ${body.titulo || slug}\n\nCaptured ${new Date().toISOString().slice(0, 16).replace('T', ' ')} from the inbox.\n\n---\n\n`;
     await writeFile(destino, cabecera + texto + '\n', 'utf8');
     return { ok: true, archivo: `notas/${slug}.md`, bytes: Buffer.byteLength(texto) };
   },
@@ -98,7 +98,7 @@ const rutas = {
 
     if (body.canal) {
       const c = body.canal;
-      if (!String(c.nombre || '').trim()) throw new Error('el canal necesita nombre');
+      if (!String(c.nombre || '').trim()) throw new Error('the channel needs a name');
       d.canales.push({
         nombre: String(c.nombre).trim(),
         tipo: c.tipo === 'competencia' ? 'competencia' : 'referencia',
@@ -108,7 +108,7 @@ const rutas = {
         primerVideo: String(c.primerVideo || '').slice(0, 10),
       });
     }
-    // Solo índices que existen: splice(-1, 1) borraría el ÚLTIMO canal sin querer.
+    // Only indexes that exist: splice(-1, 1) would delete the LAST channel by accident.
     const i = body.borrarCanal;
     if (Number.isInteger(i) && i >= 0 && i < d.canales.length) d.canales.splice(i, 1);
 
@@ -116,8 +116,9 @@ const rutas = {
     return { ok: true, slug, ...validar(d) };
   },
 
-  /* Plantillas: devuelve solo el trozo copiable, entre las marcas PROMPT:INICIO
-     y PROMPT:FIN. El resto del .md son notas mías y no debe ir al portapapeles. */
+  /* Templates: returns only the copyable part, between the PROMPT:INICIO and
+     PROMPT:FIN markers. The rest of the .md is my own notes and must not go to
+     the clipboard. */
   'GET /api/plantillas': async () => {
     const out = [];
     for (const f of (await readdir(dir('plantillas')).catch(() => [])).sort()) {
@@ -130,15 +131,15 @@ const rutas = {
         archivo: f,
         titulo: titulo.replace(/^Prompt \d+ — /, ''),
         cuerpo: m[1].trim(),
-        // Solo los huecos reales {{...}}. Los [VARIABLE] del documento son
-        // etiquetas explicativas y muchos ya vienen rellenados.
+        // Only the real {{...}} slots. The document's [VARIABLE] markers are
+        // explanatory labels, and many are already filled in.
         variables: [...new Set([...m[1].matchAll(/\{\{([^}]+)\}\}/g)].map((x) => x[1].trim()))],
       });
     }
     return { plantillas: out, nichos: (await listarNichos()).map((n) => n.nicho) };
   },
 
-  /* Ideas: candidatos y ganchos. Sin métricas inventadas — hay que validarlos. */
+  /* Ideas: candidates and hooks. No made-up metrics — they must be validated. */
   'GET /api/ideas': async (_b, url) => ({
     temas: temas(),
     nichos: nichosPorTema(url.searchParams.get('tema') || ''),
@@ -161,7 +162,7 @@ const server = createServer(async (req, res) => {
       return res.end(html);
     }
     const fn = rutas[`${req.method} ${url.pathname}`];
-    if (!fn) return json(res, 404, { error: 'no existe' });
+    if (!fn) return json(res, 404, { error: 'not found' });
     const body = req.method === 'POST' ? await leerBody(req) : null;
     return json(res, 200, await fn(body, url));
   } catch (e) {
@@ -171,4 +172,4 @@ const server = createServer(async (req, res) => {
 
 await mkdir(dir('notas'), { recursive: true }).catch(() => {});
 await mkdir(dir('nichos'), { recursive: true }).catch(() => {});
-server.listen(PUERTO, '0.0.0.0', () => console.log(`bandeja escuchando en :${PUERTO}, proyecto en ${BASE}`));
+server.listen(PUERTO, '0.0.0.0', () => console.log(`inbox listening on :${PUERTO}, project at ${BASE}`));

@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="es">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="color-scheme" content="dark light">
-<title>Bandeja · YouTube</title>
+<title>Inbox · YouTube</title>
 <style>
   :root{--bg:#0f1115;--card:#171a21;--line:#262b36;--tx:#e6e9ef;--dim:#8b93a3;
         --ok:#3ecf8e;--warn:#e8b339;--bad:#ef5b5b;--acc:#5b8cff;}
@@ -41,78 +41,79 @@
   .ch:last-child{border:0}
   .ch small{color:var(--dim)}
   .hint{font-size:13px;color:var(--dim);margin-top:8px}
+  .top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+  .top select{width:auto;padding:6px 8px;font-size:13px}
 </style>
 </head>
 <body>
 <header>
-  <h1>Bandeja · automatización YouTube</h1>
+  <div class="top">
+    <h1 data-i18n="Inbox · YouTube automation">Inbox · YouTube automation</h1>
+    <select id="lang" aria-label="Language"><option value="en">EN</option><option value="es">ES</option></select>
+  </div>
   <div class="tabs" role="tablist">
-    <button role="tab" aria-selected="true"  data-t="nicho">Nicho</button>
-    <button role="tab" aria-selected="false" data-t="nota">Nota</button>
-    <button role="tab" aria-selected="false" data-t="ideas">Ideas</button>
-    <button role="tab" aria-selected="false" data-t="prompts">Prompts</button>
-    <button role="tab" aria-selected="false" data-t="lista">Guardado</button>
+    <button role="tab" aria-selected="true"  data-t="nicho" data-i18n="Niche">Niche</button>
+    <button role="tab" aria-selected="false" data-t="nota" data-i18n="Note">Note</button>
+    <button role="tab" aria-selected="false" data-t="ideas" data-i18n="Ideas">Ideas</button>
+    <button role="tab" aria-selected="false" data-t="prompts" data-i18n="Prompts">Prompts</button>
+    <button role="tab" aria-selected="false" data-t="lista" data-i18n="Saved">Saved</button>
   </div>
 </header>
 <main>
 
 <section id="s-nicho">
-  <label>Nicho (el tema con doble clic)</label>
+  <label data-i18n="Niche (the drilled-down topic)">Niche (the drilled-down topic)</label>
   <input id="n-nicho" placeholder="Oraciones de la mañana">
-  <label>Canal — nombre</label>
+  <label data-i18n="Channel — name">Channel — name</label>
   <input id="c-nombre" placeholder="Morning Prayers Daily">
   <div class="row">
-    <div><label>Tipo</label><select id="c-tipo">
-      <option value="referencia">Referencia (inglés)</option>
-      <option value="competencia">Competencia (español)</option></select></div>
-    <div><label>Idioma</label><select id="c-idioma">
+    <div><label data-i18n="Type">Type</label><select id="c-tipo">
+      <option value="referencia" data-i18n="Reference (English)">Reference (English)</option>
+      <option value="competencia" data-i18n="Competitor (Spanish)">Competitor (Spanish)</option></select></div>
+    <div><label data-i18n="Language">Language</label><select id="c-idioma">
       <option value="en">en</option><option value="es">es</option></select></div>
   </div>
   <div class="row">
-    <div><label>Vistas/mes</label><input id="c-vistas" type="number" inputmode="numeric" placeholder="800000"></div>
-    <div><label>Duración (min)</label><input id="c-dur" type="number" inputmode="numeric" placeholder="30"></div>
+    <div><label data-i18n="Views/month">Views/month</label><input id="c-vistas" type="number" inputmode="numeric" placeholder="800000"></div>
+    <div><label data-i18n="Length (min)">Length (min)</label><input id="c-dur" type="number" inputmode="numeric" placeholder="30"></div>
   </div>
-  <label>Primer video publicado</label>
+  <label data-i18n="First video published">First video published</label>
   <input id="c-fecha" type="date">
-  <button class="go" id="b-canal">Añadir canal y validar</button>
+  <button class="go" id="b-canal" data-i18n="Add channel and validate">Add channel and validate</button>
   <div class="msg" id="m-nicho"></div>
   <div id="res"></div>
-  <p class="hint">Los datos salen de VidIQ o Social Blade. Pide 5 canales ganadores
-  en inglés, con menos de 12 meses y ≥1M vistas/mes (o ≥500k si duran 20+ min).</p>
+  <p class="hint" data-i18n="hint-niche">Get the data from VidIQ or Social Blade. It needs 5 winning channels in English, under 12 months old and with ≥1M views/month (or ≥500k if videos run 20+ min).</p>
 </section>
 
 <section id="s-nota" hidden>
-  <label>Título</label>
-  <input id="t-titulo" placeholder="transcripcion-masterclass">
-  <label>Texto (transcripción, ideas, lo que sea)</label>
-  <textarea id="t-texto" placeholder="Pega aquí…"></textarea>
-  <button class="go" id="b-nota">Guardar en notas/</button>
+  <label data-i18n="Title">Title</label>
+  <input id="t-titulo" placeholder="masterclass-transcript">
+  <label data-i18n="Text (transcript, ideas, anything)">Text (transcript, ideas, anything)</label>
+  <textarea id="t-texto" data-ph="Paste here…" placeholder="Paste here…"></textarea>
+  <button class="go" id="b-nota" data-i18n="Save to notas/">Save to notas/</button>
   <div class="msg" id="m-nota"></div>
 </section>
 
 <section id="s-prompts" hidden>
-  <label>Plantilla</label>
+  <label data-i18n="Template">Template</label>
   <select id="p-cual"></select>
   <div id="p-vars"></div>
-  <button class="go" id="p-copiar">Copiar prompt listo</button>
+  <button class="go" id="p-copiar" data-i18n="Copy finished prompt">Copy finished prompt</button>
   <div class="msg" id="p-msg"></div>
-  <label>Vista previa</label>
+  <label data-i18n="Preview">Preview</label>
   <textarea id="p-texto" readonly style="min-height:260px;font-size:13px;font-family:ui-monospace,monospace"></textarea>
-  <p class="hint">Rellena las variables, copia y pega en Claude (guion) o
-  ChatGPT (imágenes). Si dejas una variable vacía se queda entre corchetes.</p>
+  <p class="hint" data-i18n="hint-prompts">Fill in the variables, copy and paste into Claude (script) or ChatGPT (images). A variable left empty stays in braces.</p>
 </section>
 
 <section id="s-ideas" hidden>
-  <label>Filtrar candidatos por tema</label>
-  <select id="i-tema"><option value="">Todos</option></select>
+  <label data-i18n="Filter candidates by topic">Filter candidates by topic</label>
+  <select id="i-tema"><option value="" data-i18n="All">All</option></select>
   <div id="i-nichos"></div>
-  <label>Ganchos de título — escribe el tema del video</label>
+  <label data-i18n="Title hooks — type the video topic">Title hooks — type the video topic</label>
   <input id="i-titulo" placeholder="oficios desaparecidos">
-  <button class="go" id="b-titulos">Generar ganchos</button>
+  <button class="go" id="b-titulos" data-i18n="Generate hooks">Generate hooks</button>
   <div id="i-titulos"></div>
-  <p class="hint">Estos candidatos NO están validados: son puntos de partida
-  construidos con los criterios del método. Pásalos por la pestaña Nicho con
-  datos reales de VidIQ antes de decidir nada.</p>
+  <p class="hint" data-i18n="hint-ideas">These candidates are NOT validated: they're starting points built with the method's criteria. Run them through the Niche tab with real VidIQ data before deciding anything.</p>
 </section>
 
 <section id="s-lista" hidden>
@@ -121,6 +122,49 @@
 
 </main>
 <script>
+/* Interface in English or Spanish: English keys, Spanish catalogue. The choice
+   is remembered; with no choice yet, a Spanish browser gets Spanish. Niche
+   names, notes and ideas are data and are never translated. */
+const ES = {
+  'Inbox · YouTube automation': 'Bandeja · automatización YouTube',
+  'Niche': 'Nicho', 'Note': 'Nota', 'Ideas': 'Ideas', 'Prompts': 'Prompts', 'Saved': 'Guardado',
+  'Niche (the drilled-down topic)': 'Nicho (el tema con doble clic)', 'Channel — name': 'Canal — nombre',
+  'Type': 'Tipo', 'Reference (English)': 'Referencia (inglés)', 'Competitor (Spanish)': 'Competencia (español)',
+  'Language': 'Idioma', 'Views/month': 'Vistas/mes', 'Length (min)': 'Duración (min)',
+  'First video published': 'Primer video publicado', 'Add channel and validate': 'Añadir canal y validar',
+  'hint-niche': 'Los datos salen de VidIQ o Social Blade. Pide 5 canales ganadores en inglés, con menos de 12 meses y ≥1M vistas/mes (o ≥500k si duran 20+ min).',
+  'Title': 'Título', 'Text (transcript, ideas, anything)': 'Texto (transcripción, ideas, lo que sea)', 'Paste here…': 'Pega aquí…',
+  'Save to notas/': 'Guardar en notas/', 'Template': 'Plantilla', 'Copy finished prompt': 'Copiar prompt listo', 'Preview': 'Vista previa',
+  'hint-prompts': 'Rellena las variables, copia y pega en Claude (guion) o ChatGPT (imágenes). Si dejas una variable vacía se queda entre llaves.',
+  'Filter candidates by topic': 'Filtrar candidatos por tema', 'All': 'Todos',
+  'Title hooks — type the video topic': 'Ganchos de título — escribe el tema del video', 'Generate hooks': 'Generar ganchos',
+  'hint-ideas': 'Estos candidatos NO están validados: son puntos de partida construidos con los criterios del método. Pásalos por la pestaña Nicho con datos reales de VidIQ antes de decidir nada.',
+  'Winning channels': 'Canales ganadores', 'Under 12 months': 'Menos de 12 meses', 'Winners in English': 'Ganadores en inglés',
+  'Spanish-language competitors': 'Competencia en español', 'views/month': 'vistas/mes', 'months': 'meses',
+  'No channels yet': 'Sin canales todavía', 'Saved to': 'Guardado en', 'characters': 'caracteres',
+  'Copied. Paste it into Claude or ChatGPT.': 'Copiado. Pégalo en Claude o ChatGPT.',
+  "Your browser won't copy on its own: it's already selected, use Copy.": 'Tu navegador no deja copiar solo: ya está seleccionado, usa Copiar.',
+  'Emotion': 'Emoción', 'Use in the Niche tab': 'Usar en pestaña Nicho', 'Niches': 'Nichos', 'Notes': 'Notas', 'empty': 'vacío',
+  'winners out of': 'ganadores de', 'channels': 'canales',
+  'the note is empty': 'la nota está vacía', 'the channel needs a name': 'el canal necesita nombre',
+  'too large': 'demasiado grande', 'invalid json': 'json inválido', 'not found': 'no existe',
+};
+const VEREDICTO_EN = { 'ADELANTE': 'GO', 'ACEPTABLE': 'ACCEPTABLE', 'NO LANZAR': "DON'T LAUNCH" };
+let LANG = 'en';
+try { LANG = localStorage.getItem('bandeja_lang') || (/^es\b/i.test(navigator.language || '') ? 'es' : 'en'); } catch { /* storage is optional */ }
+const t = (k) => (LANG === 'es' && ES[k]) || k;
+const LOCALE = () => (LANG === 'es' ? 'es-MX' : 'en-US');
+const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const veredictoTexto = (v) => (LANG === 'es' ? v : VEREDICTO_EN[v] || v);
+function aplicarIdioma() {
+  document.documentElement.lang = LANG;
+  document.title = LANG === 'es' ? 'Bandeja · YouTube' : 'Inbox · YouTube';
+  document.querySelectorAll('[data-i18n]').forEach((el) => { el.textContent = t(el.dataset.i18n); });
+  document.querySelectorAll('[data-ph]').forEach((el) => { el.placeholder = t(el.dataset.ph); });
+  $('lang').value = LANG;
+  if (ultimo) pintar(ultimo);
+}
+
 const $ = (id) => document.getElementById(id);
 const api = async (m, url, body) => {
   const r = await fetch(url, m === 'POST'
@@ -130,33 +174,37 @@ const api = async (m, url, body) => {
   if (!r.ok) throw new Error(d.error || 'error');
   return d;
 };
+// Server errors arrive in English; known ones are shown in Spanish too.
+const errorTexto = (msg) => t(String(msg).replace(/:.*$/, '')) + (/:/.test(msg) ? msg.slice(msg.indexOf(':')) : '');
 const decir = (el, texto, ok) => { el.className = 'msg ' + (ok ? 'ok' : 'err'); el.textContent = texto; };
 
 document.querySelectorAll('.tabs button').forEach((b) => b.onclick = () => {
   document.querySelectorAll('.tabs button').forEach((x) => x.setAttribute('aria-selected', x === b));
-  for (const t of ['nicho','nota','ideas','prompts','lista']) $('s-' + t).hidden = (t !== b.dataset.t);
+  for (const s of ['nicho','nota','ideas','prompts','lista']) $('s-' + s).hidden = (s !== b.dataset.t);
   if (b.dataset.t === 'lista') cargarLista();
   if (b.dataset.t === 'ideas') cargarIdeas();
   if (b.dataset.t === 'prompts') cargarPrompts();
 });
 
+let ultimo = null;
 function pintar(r) {
+  ultimo = r;
   const f = r.filtros, marca = (b) => b ? '✓' : '✗';
   $('res').innerHTML = `
     <div class="card">
-      <div class="vd ${r.veredicto.split(' ')[0]}">${r.veredicto}</div>
-      <p style="margin:8px 0 0;font-size:14px">${r.mensaje}</p>
+      <div class="vd ${esc(r.veredicto.split(' ')[0])}">${esc(veredictoTexto(r.veredicto))}</div>
+      <p style="margin:8px 0 0;font-size:14px">${esc(LANG === 'es' ? r.mensaje : r.message || r.mensaje)}</p>
     </div>
     <div class="card">
-      <div class="f"><span>${marca(f.ganadores.ok)} Canales ganadores</span><b>${f.ganadores.valor} / ${f.ganadores.pide}</b></div>
-      <div class="f"><span>${marca(f.antiguedad.ok)} Menos de 12 meses</span><b>${f.antiguedad.valor} / ${f.antiguedad.pide}</b></div>
-      <div class="f"><span>${marca(f.ingles.ok)} Ganadores en inglés</span><b>${f.ingles.valor} / ${f.ingles.pide}</b></div>
-      <div class="f"><span>${marca(f.demanda.ok)} Competencia en español</span><b>${f.demanda.valor}</b></div>
+      <div class="f"><span>${marca(f.ganadores.ok)} ${t('Winning channels')}</span><b>${f.ganadores.valor} / ${f.ganadores.pide}</b></div>
+      <div class="f"><span>${marca(f.antiguedad.ok)} ${t('Under 12 months')}</span><b>${f.antiguedad.valor} / ${f.antiguedad.pide}</b></div>
+      <div class="f"><span>${marca(f.ingles.ok)} ${t('Winners in English')}</span><b>${f.ingles.valor} / ${f.ingles.pide}</b></div>
+      <div class="f"><span>${marca(f.demanda.ok)} ${t('Spanish-language competitors')}</span><b>${f.demanda.valor}</b></div>
     </div>
     <div class="card">${
       r.refs.concat(r.comps).map((c) => `<div class="ch">${c.ganador ? '✓' : (c.tipo === 'competencia' ? '·' : '✗')}
-        ${c.nombre} <small>[${c.idioma}]</small><br>
-        <small>${Number(c.vistasMes).toLocaleString('es-MX')} vistas/mes · ${c.duracionMin} min · ${c.meses} meses</small></div>`).join('') || '<small>Sin canales todavía</small>'}
+        ${esc(c.nombre)} <small>[${esc(c.idioma)}]</small><br>
+        <small>${Number(c.vistasMes).toLocaleString(LOCALE())} ${t('views/month')} · ${esc(c.duracionMin)} min · ${esc(c.meses)} ${t('months')}</small></div>`).join('') || `<small>${t('No channels yet')}</small>`}
     </div>`;
 }
 
@@ -168,10 +216,10 @@ $('b-canal').onclick = async () => {
       canal: { nombre: $('c-nombre').value, tipo: $('c-tipo').value, idioma: $('c-idioma').value,
                vistasMes: $('c-vistas').value, duracionMin: $('c-dur').value, primerVideo: $('c-fecha').value },
     });
-    decir($('m-nicho'), 'Guardado en nichos/' + r.slug + '.json', true);
+    decir($('m-nicho'), `${t('Saved to')} nichos/${r.slug}.json`, true);
     ['c-nombre','c-vistas','c-dur'].forEach((i) => $(i).value = '');
     pintar(r);
-  } catch (e) { decir($('m-nicho'), e.message, false); }
+  } catch (e) { decir($('m-nicho'), errorTexto(e.message), false); }
   b.disabled = false;
 };
 
@@ -179,9 +227,9 @@ $('b-nota').onclick = async () => {
   const b = $('b-nota'); b.disabled = true;
   try {
     const r = await api('POST', '/api/nota', { titulo: $('t-titulo').value, texto: $('t-texto').value });
-    decir($('m-nota'), `Guardado ${r.archivo} (${r.bytes.toLocaleString('es-MX')} caracteres)`, true);
+    decir($('m-nota'), `${t('Saved to')} ${r.archivo} (${r.bytes.toLocaleString(LOCALE())} ${t('characters')})`, true);
     $('t-texto').value = '';
-  } catch (e) { decir($('m-nota'), e.message, false); }
+  } catch (e) { decir($('m-nota'), errorTexto(e.message), false); }
   b.disabled = false;
 };
 
@@ -189,17 +237,18 @@ let PL = null;
 async function cargarPrompts() {
   if (!PL) {
     PL = await api('GET', '/api/plantillas');
-    $('p-cual').innerHTML = PL.plantillas.map((p, i) => `<option value="${i}">${p.titulo}</option>`).join('');
+    $('p-cual').innerHTML = PL.plantillas.map((p, i) => `<option value="${i}">${esc(p.titulo)}</option>`).join('');
     $('p-cual').onchange = pintarVars;
   }
   pintarVars();
 }
 function pintarVars() {
   const p = PL.plantillas[$('p-cual').value];
-  const listaNichos = PL.nichos.map((n) => `<option value="${n}">`).join('');
+  if (!p) return;
+  const listaNichos = PL.nichos.map((n) => `<option value="${esc(n)}">`).join('');
   $('p-vars').innerHTML = p.variables.map((v) => `
-    <label>${v}</label>
-    <input class="pv" data-v="${v}" placeholder="${v}"
+    <label>${esc(v)}</label>
+    <input class="pv" data-v="${esc(v)}" placeholder="${esc(v)}"
       ${v === 'NICHO' ? 'list="dl-nichos"' : ''}>`).join('')
     + `<datalist id="dl-nichos">${listaNichos}</datalist>`;
   document.querySelectorAll('.pv').forEach((i) => i.oninput = armar);
@@ -207,21 +256,21 @@ function pintarVars() {
 }
 function armar() {
   const p = PL.plantillas[$('p-cual').value];
-  let t = p.cuerpo;
+  let txt = p.cuerpo;
   document.querySelectorAll('.pv').forEach((i) => {
-    if (i.value.trim()) t = t.split('{{' + i.dataset.v + '}}').join(i.value.trim());
+    if (i.value.trim()) txt = txt.split('{{' + i.dataset.v + '}}').join(i.value.trim());
   });
-  $('p-texto').value = t;
+  $('p-texto').value = txt;
 }
 $('p-copiar').onclick = async () => {
-  const t = $('p-texto').value;
+  const txt = $('p-texto').value;
   try {
-    await navigator.clipboard.writeText(t);
-    decir($('p-msg'), 'Copiado. Pégalo en Claude o ChatGPT.', true);
+    await navigator.clipboard.writeText(txt);
+    decir($('p-msg'), t('Copied. Paste it into Claude or ChatGPT.'), true);
   } catch {
     $('p-texto').removeAttribute('readonly');
     $('p-texto').select(); $('p-texto').setSelectionRange(0, 999999);
-    decir($('p-msg'), 'Tu navegador no deja copiar solo: ya está seleccionado, usa Copiar.', false);
+    decir($('p-msg'), t("Your browser won't copy on its own: it's already selected, use Copy."), false);
   }
 };
 
@@ -229,19 +278,19 @@ let ideasCargadas = false;
 async function cargarIdeas() {
   const d = await api('GET', '/api/ideas?tema=' + encodeURIComponent($('i-tema').value || ''));
   if (!ideasCargadas) {
-    $('i-tema').innerHTML = '<option value="">Todos</option>' + d.temas.map((t) => `<option>${t}</option>`).join('');
+    $('i-tema').innerHTML = `<option value="" data-i18n="All">${t('All')}</option>` + d.temas.map((x) => `<option>${esc(x)}</option>`).join('');
     $('i-tema').onchange = cargarIdeas;
     ideasCargadas = true;
   }
   $('i-nichos').innerHTML = d.nichos.map((n) => `
     <div class="card">
-      <small style="color:var(--dim)">${n.tema} › ${n.clic1} ›</small>
-      <div style="font-weight:600;margin:4px 0">${n.clic2}</div>
-      <div style="font-size:13px;color:var(--dim)">${n.porque}</div>
-      <div style="font-size:13px;margin-top:6px">Emoción: <b>${n.emocion}</b></div>
-      <button class="go" style="margin-top:10px;background:#2a3142"
-        onclick="usarNicho(${JSON.stringify(n.clic2).replace(/"/g,'&quot;')})">Usar en pestaña Nicho</button>
+      <small style="color:var(--dim)">${esc(n.tema)} › ${esc(n.clic1)} ›</small>
+      <div style="font-weight:600;margin:4px 0">${esc(n.clic2)}</div>
+      <div style="font-size:13px;color:var(--dim)">${esc(n.porque)}</div>
+      <div style="font-size:13px;margin-top:6px">${t('Emotion')}: <b>${esc(n.emocion)}</b></div>
+      <button class="go usar" style="margin-top:10px;background:#2a3142" data-nicho="${esc(n.clic2)}">${t('Use in the Niche tab')}</button>
     </div>`).join('');
+  document.querySelectorAll('.usar').forEach((b) => b.onclick = () => usarNicho(b.dataset.nicho));
 }
 function usarNicho(nombre) {
   $('n-nicho').value = nombre;
@@ -251,19 +300,29 @@ function usarNicho(nombre) {
 $('b-titulos').onclick = async () => {
   const d = await api('GET', '/api/ideas?titulo=' + encodeURIComponent($('i-titulo').value));
   $('i-titulos').innerHTML = '<div class="card">' +
-    d.titulos.map((t) => `<div class="ch">${t}</div>`).join('') + '</div>';
+    d.titulos.map((x) => `<div class="ch">${esc(x)}</div>`).join('') + '</div>';
 };
 
 async function cargarLista() {
   try {
     const d = await api('GET', '/api/estado');
+    const vacio = `<div class="ch"><small>${t('empty')}</small></div>`;
     $('lista').innerHTML =
-      '<div class="card"><b>Nichos</b>' + (d.nichos.map((n) =>
-        `<div class="ch"><span class="vd ${n.veredicto.split(' ')[0]}">${n.veredicto}</span> — ${n.nicho}
-         <br><small>${n.ganadores} ganadores de ${n.canales} canales · nichos/${n.slug}.json</small></div>`).join('') || '<div class="ch"><small>vacío</small></div>') + '</div>' +
-      '<div class="card"><b>Notas</b>' + (d.notas.map((f) => `<div class="ch">${f}</div>`).join('') || '<div class="ch"><small>vacío</small></div>') + '</div>';
-  } catch (e) { $('lista').innerHTML = '<div class="msg err" style="display:block">' + e.message + '</div>'; }
+      `<div class="card"><b>${t('Niches')}</b>` + (d.nichos.map((n) =>
+        `<div class="ch"><span class="vd ${esc(n.veredicto.split(' ')[0])}">${esc(veredictoTexto(n.veredicto))}</span> — ${esc(n.nicho)}
+         <br><small>${n.ganadores} ${t('winners out of')} ${n.canales} ${t('channels')} · nichos/${esc(n.slug)}.json</small></div>`).join('') || vacio) + '</div>' +
+      `<div class="card"><b>${t('Notes')}</b>` + (d.notas.map((f) => `<div class="ch">${esc(f)}</div>`).join('') || vacio) + '</div>';
+  } catch (e) { $('lista').innerHTML = '<div class="msg err" style="display:block">' + esc(errorTexto(e.message)) + '</div>'; }
 }
+
+$('lang').onchange = () => {
+  LANG = $('lang').value;
+  try { localStorage.setItem('bandeja_lang', LANG); } catch { /* storage is optional */ }
+  aplicarIdioma();
+  if (!$('s-lista').hidden) cargarLista();
+  if (!$('s-ideas').hidden) cargarIdeas();
+};
+aplicarIdioma();
 </script>
 </body>
 </html>

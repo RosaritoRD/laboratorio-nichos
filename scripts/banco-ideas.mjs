@@ -1,17 +1,18 @@
-/* Banco de ideas de nicho y de contenido.
+/* Bank of niche and content ideas.
 
-   IMPORTANTE — honestidad de los datos: aquí NO hay métricas. Ningún número de
-   vistas, ningún "este nicho da X". Inventar esas cifras sería exactamente el
-   error que el playbook advierte. Lo que hay son CANDIDATOS construidos con los
-   criterios del método (evergreen + audiencia +50 + carga emocional), que
-   todavía tienes que validar tú con VidIQ contra los 4 filtros.
+   IMPORTANT — data honesty: there are NO metrics here. No view counts, no
+   "this niche makes X". Making those numbers up would be exactly the mistake
+   the playbook warns about. What's here are CANDIDATES built with the method's
+   criteria (evergreen + 50+ audience + emotional charge), which you still have
+   to validate yourself with VidIQ against the 4 filters.
 
-   Un candidato de aquí NO es un nicho aprobado. Es un punto de partida para la
-   pestaña Nicho.
+   A candidate from here is NOT an approved niche. It's a starting point for
+   the Niche tab. The ideas themselves are in Spanish: they target Spanish-
+   language channels.
 */
 
-/* Los temas que funcionaban en la tele de los 80/90 y siguen funcionando.
-   "No te creas tan inteligente: vete a lo que ya funcionó." */
+/* The topics that worked on 80s/90s TV and still work.
+   "Don't think you're so smart: go with what already worked." */
 export const NICHOS = [
   { tema:'Religión', clic1:'Oraciones', clic2:'Oraciones de la mañana por día de la semana',
     porque:'Consumo diario, hábito fijo, audiencia mayor devota. Full IA puro.', emocion:'esperanza / consuelo' },
@@ -45,8 +46,8 @@ export const NICHOS = [
     porque:'Gancho de descubrimiento personal, altísimo CTR.', emocion:'codicia / sorpresa' },
 ];
 
-/* Patrones de título del video: el framing hace el trabajo, no el tema.
-   "Los mejores libros" -> "Los libros que los ricos quieren prohibir". */
+/* Title patterns from the video: the framing does the work, not the topic.
+   "The best books" -> "The books the rich want banned". */
 export const GANCHOS = [
   (t) => `Los ${t} que nadie quiere que sepas`,
   (t) => `${t}: lo que descubrieron cambió todo`,

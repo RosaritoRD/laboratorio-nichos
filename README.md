@@ -22,7 +22,7 @@
 | 📱 **`inbox/`** | A mobile web inbox: save notes and transcripts, add channels and see the verdict live. |
 | 📁 **`plantilla/` + `nuevo-nicho.sh`** | Creates an isolated folder for a new channel, with its own `CLAUDE.md` ready to go. |
 
-> The tool's output and inbox UI are in Spanish — it was built for Spanish-language channels — but the method works for any language.
+> The inbox and the CLI speak English and Spanish (they follow your browser / `LANG`; force the CLI with `--en` or `--es`). The niche ideas themselves are in Spanish, because the tool was built for Spanish-language channels — but the method works for any language.
 
 ## 🧮 The 4 filters
 
@@ -38,13 +38,12 @@ A reference channel is a **winner** if:
 | + | At least **1 competitor in Spanish**, to prove there's demand (without one, the best you get is ACCEPTABLE) |
 
 ```bash
-node scripts/validar-nicho.mjs nichos-ejemplo/ejemplo.json
+node scripts/validar-nicho.mjs nichos-ejemplo/ejemplo.json --en
 ```
 ```
-VEREDICTO
-  NO LANZAR — Faltan 2 canales ganadores. Busca más canales o haz otro doble clic en el tema. NO bajes el umbral.
+VERDICT
+  DON'T LAUNCH — 2 winning channels missing. Find more channels or drill one level deeper into the topic. DON'T lower the bar.
 ```
-*(DON'T LAUNCH — 2 winning channels missing. Find more channels or drill one level deeper into the topic. DON'T lower the bar.)*
 
 You collect each channel's data yourself, by hand, from **VidIQ** or **Social Blade**. See the format in [`nichos-ejemplo/ejemplo.json`](nichos-ejemplo/ejemplo.json).
 
