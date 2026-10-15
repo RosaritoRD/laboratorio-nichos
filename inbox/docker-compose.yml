@@ -1,0 +1,56 @@
+# Bandeja de captura de ideas.
+#
+# oauth2-proxy es lo único con salida a tu proxy HTTPS (Nginx Proxy Manager, Caddy…),
+# y la bandeja vive en una red `internal: true`: sin ruta a internet ni en un sentido
+# ni en el otro. Sin pasar por el login de Google no hay forma de llegar a ella.
+#
+# Levantar (desde la raíz del repo):  docker compose -f inbox/docker-compose.yml up -d --build
+
+services:
+  yt-auth:
+    image: quay.io/oauth2-proxy/oauth2-proxy:v7.6.0
+    container_name: yt-auth
+    restart: unless-stopped
+    env_file:
+      - ./oauth.env                       # ver inbox/oauth.env.example
+    environment:
+      OAUTH2_PROXY_PROVIDER: google
+      # Esta URI tiene que estar dada de alta en tu cliente OAuth de Google Cloud,
+      # o el login falla con redirect_uri_mismatch.
+      OAUTH2_PROXY_REDIRECT_URL: https://yt.tu-dominio.com/oauth2/callback
+      OAUTH2_PROXY_AUTHENTICATED_EMAILS_FILE: /etc/oauth2/allowed-emails.txt
+      OAUTH2_PROXY_UPSTREAMS: http://yt-inbox:8080
+      OAUTH2_PROXY_HTTP_ADDRESS: 0.0.0.0:4180
+      OAUTH2_PROXY_EMAIL_DOMAINS: "*"
+      OAUTH2_PROXY_REVERSE_PROXY: "true"
+      OAUTH2_PROXY_COOKIE_SECURE: "true"
+      OAUTH2_PROXY_COOKIE_EXPIRE: 168h
+      OAUTH2_PROXY_SKIP_PROVIDER_BUTTON: "true"
+    ports:
+      - "127.0.0.1:4190:4180"      # solo para diagnóstico local
+    volumes:
+      - ./allowed-emails.txt:/etc/oauth2/allowed-emails.txt:ro
+    networks:
+      - yt_private
+      - proxy
+    depends_on:
+      - yt-inbox
+
+  yt-inbox:
+    build:
+      context: ..
+      dockerfile: inbox/Dockerfile
+    container_name: yt-inbox
+    restart: unless-stopped
+    # Solo la carpeta del proyecto (notas/ y nichos/). Nada más del servidor.
+    volumes:
+      - ..:/proyecto
+    networks:
+      - yt_private          # internal: sin ruta a internet, sin puertos publicados
+
+networks:
+  yt_private:
+    internal: true
+  proxy:
+    external: true
+    name: ${PROXY_NETWORK:-nginx-proxy-manager_default}   # la red de Docker de tu proxy

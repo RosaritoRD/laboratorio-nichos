@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="dark light">
+<title>Bandeja · YouTube</title>
+<style>
+  :root{--bg:#0f1115;--card:#171a21;--line:#262b36;--tx:#e6e9ef;--dim:#8b93a3;
+        --ok:#3ecf8e;--warn:#e8b339;--bad:#ef5b5b;--acc:#5b8cff;}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--tx);
+       font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+       padding:0 0 env(safe-area-inset-bottom)}
+  header{padding:16px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:2}
+  h1{margin:0;font-size:17px;letter-spacing:.02em}
+  .tabs{display:flex;gap:8px;margin-top:12px}
+  .tabs button{flex:1;padding:10px;border:1px solid var(--line);background:transparent;
+       color:var(--dim);border-radius:10px;font-size:14px}
+  .tabs button[aria-selected=true]{background:var(--card);color:var(--tx);border-color:var(--acc)}
+  main{padding:16px;max-width:720px;margin:0 auto}
+  section[hidden]{display:none}
+  label{display:block;font-size:13px;color:var(--dim);margin:14px 0 6px}
+  input,textarea,select{width:100%;padding:12px;background:var(--card);color:var(--tx);
+       border:1px solid var(--line);border-radius:10px;font:inherit;font-size:16px}
+  textarea{min-height:220px;resize:vertical}
+  .row{display:flex;gap:10px}.row>*{flex:1}
+  button.go{width:100%;margin-top:16px;padding:14px;border:0;border-radius:10px;
+       background:var(--acc);color:#fff;font-size:16px;font-weight:600}
+  button.go:disabled{opacity:.5}
+  .msg{margin-top:12px;padding:12px;border-radius:10px;font-size:14px;display:none}
+  .msg.ok{display:block;background:#10301f;color:var(--ok)}
+  .msg.err{display:block;background:#331414;color:var(--bad)}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-top:12px}
+  .vd{font-weight:700;letter-spacing:.04em}
+  .vd.ADELANTE{color:var(--ok)}.vd.ACEPTABLE{color:var(--warn)}.vd\[NO\]{color:var(--bad)}
+  .vd.NO{color:var(--bad)}
+  .f{display:flex;justify-content:space-between;font-size:14px;padding:4px 0;border-bottom:1px solid var(--line)}
+  .f:last-child{border:0}
+  .ch{font-size:14px;padding:8px 0;border-bottom:1px solid var(--line)}
+  .ch:last-child{border:0}
+  .ch small{color:var(--dim)}
+  .hint{font-size:13px;color:var(--dim);margin-top:8px}
+</style>
+</head>
+<body>
+<header>
+  <h1>Bandeja · automatización YouTube</h1>
+  <div class="tabs" role="tablist">
+    <button role="tab" aria-selected="true"  data-t="nicho">Nicho</button>
+    <button role="tab" aria-selected="false" data-t="nota">Nota</button>
+    <button role="tab" aria-selected="false" data-t="ideas">Ideas</button>
+    <button role="tab" aria-selected="false" data-t="prompts">Prompts</button>
+    <button role="tab" aria-selected="false" data-t="lista">Guardado</button>
+  </div>
+</header>
+<main>
+
+<section id="s-nicho">
+  <label>Nicho (el tema con doble clic)</label>
+  <input id="n-nicho" placeholder="Oraciones de la mañana">
+  <label>Canal — nombre</label>
+  <input id="c-nombre" placeholder="Morning Prayers Daily">
+  <div class="row">
+    <div><label>Tipo</label><select id="c-tipo">
+      <option value="referencia">Referencia (inglés)</option>
+      <option value="competencia">Competencia (español)</option></select></div>
+    <div><label>Idioma</label><select id="c-idioma">
+      <option value="en">en</option><option value="es">es</option></select></div>
+  </div>
+  <div class="row">
+    <div><label>Vistas/mes</label><input id="c-vistas" type="number" inputmode="numeric" placeholder="800000"></div>
+    <div><label>Duración (min)</label><input id="c-dur" type="number" inputmode="numeric" placeholder="30"></div>
+  </div>
+  <label>Primer video publicado</label>
+  <input id="c-fecha" type="date">
+  <button class="go" id="b-canal">Añadir canal y validar</button>
+  <div class="msg" id="m-nicho"></div>
+  <div id="res"></div>
+  <p class="hint">Los datos salen de VidIQ o Social Blade. Pide 5 canales ganadores
+  en inglés, con menos de 12 meses y ≥1M vistas/mes (o ≥500k si duran 20+ min).</p>
+</section>
+
+<section id="s-nota" hidden>
+  <label>Título</label>
+  <input id="t-titulo" placeholder="transcripcion-masterclass">
+  <label>Texto (transcripción, ideas, lo que sea)</label>
+  <textarea id="t-texto" placeholder="Pega aquí…"></textarea>
+  <button class="go" id="b-nota">Guardar en notas/</button>
+  <div class="msg" id="m-nota"></div>
+</section>
+
+<section id="s-prompts" hidden>
+  <label>Plantilla</label>
+  <select id="p-cual"></select>
+  <div id="p-vars"></div>
+  <button class="go" id="p-copiar">Copiar prompt listo</button>
+  <div class="msg" id="p-msg"></div>
+  <label>Vista previa</label>
+  <textarea id="p-texto" readonly style="min-height:260px;font-size:13px;font-family:ui-monospace,monospace"></textarea>
+  <p class="hint">Rellena las variables, copia y pega en Claude (guion) o
+  ChatGPT (imágenes). Si dejas una variable vacía se queda entre corchetes.</p>
+</section>
+
+<section id="s-ideas" hidden>
+  <label>Filtrar candidatos por tema</label>
+  <select id="i-tema"><option value="">Todos</option></select>
+  <div id="i-nichos"></div>
+  <label>Ganchos de título — escribe el tema del video</label>
+  <input id="i-titulo" placeholder="oficios desaparecidos">
+  <button class="go" id="b-titulos">Generar ganchos</button>
+  <div id="i-titulos"></div>
+  <p class="hint">Estos candidatos NO están validados: son puntos de partida
+  construidos con los criterios del método. Pásalos por la pestaña Nicho con
+  datos reales de VidIQ antes de decidir nada.</p>
+</section>
+
+<section id="s-lista" hidden>
+  <div id="lista"></div>
+</section>
+
+</main>
+<script>
+const $ = (id) => document.getElementById(id);
+const api = async (m, url, body) => {
+  const r = await fetch(url, m === 'POST'
+    ? { method:'POST', headers:{'content-type':'application/json'}, body:JSON.stringify(body) }
+    : {});
+  const d = await r.json();
+  if (!r.ok) throw new Error(d.error || 'error');
+  return d;
+};
+const decir = (el, texto, ok) => { el.className = 'msg ' + (ok ? 'ok' : 'err'); el.textContent = texto; };
+
+document.querySelectorAll('.tabs button').forEach((b) => b.onclick = () => {
+  document.querySelectorAll('.tabs button').forEach((x) => x.setAttribute('aria-selected', x === b));
+  for (const t of ['nicho','nota','ideas','prompts','lista']) $('s-' + t).hidden = (t !== b.dataset.t);
+  if (b.dataset.t === 'lista') cargarLista();
+  if (b.dataset.t === 'ideas') cargarIdeas();
+  if (b.dataset.t === 'prompts') cargarPrompts();
+});
+
+function pintar(r) {
+  const f = r.filtros, marca = (b) => b ? '✓' : '✗';
+  $('res').innerHTML = `
+    <div class="card">
+      <div class="vd ${r.veredicto.split(' ')[0]}">${r.veredicto}</div>
+      <p style="margin:8px 0 0;font-size:14px">${r.mensaje}</p>
+    </div>
+    <div class="card">
+      <div class="f"><span>${marca(f.ganadores.ok)} Canales ganadores</span><b>${f.ganadores.valor} / ${f.ganadores.pide}</b></div>
+      <div class="f"><span>${marca(f.antiguedad.ok)} Menos de 12 meses</span><b>${f.antiguedad.valor} / ${f.antiguedad.pide}</b></div>
+      <div class="f"><span>${marca(f.ingles.ok)} Ganadores en inglés</span><b>${f.ingles.valor} / ${f.ingles.pide}</b></div>
+      <div class="f"><span>${marca(f.demanda.ok)} Competencia en español</span><b>${f.demanda.valor}</b></div>
+    </div>
+    <div class="card">${
+      r.refs.concat(r.comps).map((c) => `<div class="ch">${c.ganador ? '✓' : (c.tipo === 'competencia' ? '·' : '✗')}
+        ${c.nombre} <small>[${c.idioma}]</small><br>
+        <small>${Number(c.vistasMes).toLocaleString('es-MX')} vistas/mes · ${c.duracionMin} min · ${c.meses} meses</small></div>`).join('') || '<small>Sin canales todavía</small>'}
+    </div>`;
+}
+
+$('b-canal').onclick = async () => {
+  const b = $('b-canal'); b.disabled = true;
+  try {
+    const r = await api('POST', '/api/nicho', {
+      nicho: $('n-nicho').value,
+      canal: { nombre: $('c-nombre').value, tipo: $('c-tipo').value, idioma: $('c-idioma').value,
+               vistasMes: $('c-vistas').value, duracionMin: $('c-dur').value, primerVideo: $('c-fecha').value },
+    });
+    decir($('m-nicho'), 'Guardado en nichos/' + r.slug + '.json', true);
+    ['c-nombre','c-vistas','c-dur'].forEach((i) => $(i).value = '');
+    pintar(r);
+  } catch (e) { decir($('m-nicho'), e.message, false); }
+  b.disabled = false;
+};
+
+$('b-nota').onclick = async () => {
+  const b = $('b-nota'); b.disabled = true;
+  try {
+    const r = await api('POST', '/api/nota', { titulo: $('t-titulo').value, texto: $('t-texto').value });
+    decir($('m-nota'), `Guardado ${r.archivo} (${r.bytes.toLocaleString('es-MX')} caracteres)`, true);
+    $('t-texto').value = '';
+  } catch (e) { decir($('m-nota'), e.message, false); }
+  b.disabled = false;
+};
+
+let PL = null;
+async function cargarPrompts() {
+  if (!PL) {
+    PL = await api('GET', '/api/plantillas');
+    $('p-cual').innerHTML = PL.plantillas.map((p, i) => `<option value="${i}">${p.titulo}</option>`).join('');
+    $('p-cual').onchange = pintarVars;
+  }
+  pintarVars();
+}
+function pintarVars() {
+  const p = PL.plantillas[$('p-cual').value];
+  const listaNichos = PL.nichos.map((n) => `<option value="${n}">`).join('');
+  $('p-vars').innerHTML = p.variables.map((v) => `
+    <label>${v}</label>
+    <input class="pv" data-v="${v}" placeholder="${v}"
+      ${v === 'NICHO' ? 'list="dl-nichos"' : ''}>`).join('')
+    + `<datalist id="dl-nichos">${listaNichos}</datalist>`;
+  document.querySelectorAll('.pv').forEach((i) => i.oninput = armar);
+  armar();
+}
+function armar() {
+  const p = PL.plantillas[$('p-cual').value];
+  let t = p.cuerpo;
+  document.querySelectorAll('.pv').forEach((i) => {
+    if (i.value.trim()) t = t.split('{{' + i.dataset.v + '}}').join(i.value.trim());
+  });
+  $('p-texto').value = t;
+}
+$('p-copiar').onclick = async () => {
+  const t = $('p-texto').value;
+  try {
+    await navigator.clipboard.writeText(t);
+    decir($('p-msg'), 'Copiado. Pégalo en Claude o ChatGPT.', true);
+  } catch {
+    $('p-texto').removeAttribute('readonly');
+    $('p-texto').select(); $('p-texto').setSelectionRange(0, 999999);
+    decir($('p-msg'), 'Tu navegador no deja copiar solo: ya está seleccionado, usa Copiar.', false);
+  }
+};
+
+let ideasCargadas = false;
+async function cargarIdeas() {
+  const d = await api('GET', '/api/ideas?tema=' + encodeURIComponent($('i-tema').value || ''));
+  if (!ideasCargadas) {
+    $('i-tema').innerHTML = '<option value="">Todos</option>' + d.temas.map((t) => `<option>${t}</option>`).join('');
+    $('i-tema').onchange = cargarIdeas;
+    ideasCargadas = true;
+  }
+  $('i-nichos').innerHTML = d.nichos.map((n) => `
+    <div class="card">
+      <small style="color:var(--dim)">${n.tema} › ${n.clic1} ›</small>
+      <div style="font-weight:600;margin:4px 0">${n.clic2}</div>
+      <div style="font-size:13px;color:var(--dim)">${n.porque}</div>
+      <div style="font-size:13px;margin-top:6px">Emoción: <b>${n.emocion}</b></div>
+      <button class="go" style="margin-top:10px;background:#2a3142"
+        onclick="usarNicho(${JSON.stringify(n.clic2).replace(/"/g,'&quot;')})">Usar en pestaña Nicho</button>
+    </div>`).join('');
+}
+function usarNicho(nombre) {
+  $('n-nicho').value = nombre;
+  document.querySelector('.tabs button[data-t=nicho]').click();
+  window.scrollTo(0, 0);
+}
+$('b-titulos').onclick = async () => {
+  const d = await api('GET', '/api/ideas?titulo=' + encodeURIComponent($('i-titulo').value));
+  $('i-titulos').innerHTML = '<div class="card">' +
+    d.titulos.map((t) => `<div class="ch">${t}</div>`).join('') + '</div>';
+};
+
+async function cargarLista() {
+  try {
+    const d = await api('GET', '/api/estado');
+    $('lista').innerHTML =
+      '<div class="card"><b>Nichos</b>' + (d.nichos.map((n) =>
+        `<div class="ch"><span class="vd ${n.veredicto.split(' ')[0]}">${n.veredicto}</span> — ${n.nicho}
+         <br><small>${n.ganadores} ganadores de ${n.canales} canales · nichos/${n.slug}.json</small></div>`).join('') || '<div class="ch"><small>vacío</small></div>') + '</div>' +
+      '<div class="card"><b>Notas</b>' + (d.notas.map((f) => `<div class="ch">${f}</div>`).join('') || '<div class="ch"><small>vacío</small></div>') + '</div>';
+  } catch (e) { $('lista').innerHTML = '<div class="msg err" style="display:block">' + e.message + '</div>'; }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+inbox/oauth.env
+inbox/allowed-emails.txt
+*.env
+.env*
+notas/
+nichos/
+node_modules/

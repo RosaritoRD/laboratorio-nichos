@@ -1,0 +1,11 @@
+{
+  "nicho": "Ejemplo: oraciones cortas para dormir",
+  "notas": "Datos INVENTADOS para que veas el formato. Rellena con canales reales que encuentres con VidIQ o Social Blade.",
+  "canales": [
+    { "nombre": "Canal A", "tipo": "referencia", "vistasMes": 1500000, "duracionMin": 8,  "primerVideo": "2026-03-01", "idioma": "en" },
+    { "nombre": "Canal B", "tipo": "referencia", "vistasMes": 1200000, "duracionMin": 12, "primerVideo": "2026-01-15", "idioma": "en" },
+    { "nombre": "Canal C", "tipo": "referencia", "vistasMes": 900000,  "duracionMin": 25, "primerVideo": "2025-12-01", "idioma": "es" },
+    { "nombre": "Canal D", "tipo": "referencia", "vistasMes": 300000,  "duracionMin": 6,  "primerVideo": "2026-05-10", "idioma": "es" },
+    { "nombre": "Canal E", "tipo": "competencia", "vistasMes": 2000000, "duracionMin": 10, "primerVideo": "2023-06-01", "idioma": "es" }
+  ]
+}
