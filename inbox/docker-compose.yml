@@ -1,10 +1,10 @@
-# Bandeja de captura de ideas.
+# Idea capture inbox.
 #
-# oauth2-proxy es lo único con salida a tu proxy HTTPS (Nginx Proxy Manager, Caddy…),
-# y la bandeja vive en una red `internal: true`: sin ruta a internet ni en un sentido
-# ni en el otro. Sin pasar por el login de Google no hay forma de llegar a ella.
+# oauth2-proxy is the only thing connected to your HTTPS proxy (Nginx Proxy Manager, Caddy…),
+# and the inbox lives on an `internal: true` network: no route to or from the internet.
+# Without going through the Google login there's no way to reach it.
 #
-# Levantar (desde la raíz del repo):  docker compose -f inbox/docker-compose.yml up -d --build
+# Start it (from the repo root):  docker compose -f inbox/docker-compose.yml up -d --build
 
 services:
   yt-auth:
@@ -12,11 +12,11 @@ services:
     container_name: yt-auth
     restart: unless-stopped
     env_file:
-      - ./oauth.env                       # ver inbox/oauth.env.example
+      - ./oauth.env                       # see inbox/oauth.env.example
     environment:
       OAUTH2_PROXY_PROVIDER: google
-      # Esta URI tiene que estar dada de alta en tu cliente OAuth de Google Cloud,
-      # o el login falla con redirect_uri_mismatch.
+      # This URI must be registered in your Google Cloud OAuth client,
+      # or login fails with redirect_uri_mismatch.
       OAUTH2_PROXY_REDIRECT_URL: https://yt.tu-dominio.com/oauth2/callback
       OAUTH2_PROXY_AUTHENTICATED_EMAILS_FILE: /etc/oauth2/allowed-emails.txt
       OAUTH2_PROXY_UPSTREAMS: http://yt-inbox:8080
@@ -27,7 +27,7 @@ services:
       OAUTH2_PROXY_COOKIE_EXPIRE: 168h
       OAUTH2_PROXY_SKIP_PROVIDER_BUTTON: "true"
     ports:
-      - "127.0.0.1:4190:4180"      # solo para diagnóstico local
+      - "127.0.0.1:4190:4180"      # for local diagnostics only
     volumes:
       - ./allowed-emails.txt:/etc/oauth2/allowed-emails.txt:ro
     networks:
@@ -42,15 +42,15 @@ services:
       dockerfile: inbox/Dockerfile
     container_name: yt-inbox
     restart: unless-stopped
-    # Solo la carpeta del proyecto (notas/ y nichos/). Nada más del servidor.
+    # Only the project folder (notas/ and nichos/). Nothing else from the server.
     volumes:
       - ..:/proyecto
     networks:
-      - yt_private          # internal: sin ruta a internet, sin puertos publicados
+      - yt_private          # internal: no route to the internet, no published ports
 
 networks:
   yt_private:
     internal: true
   proxy:
     external: true
-    name: ${PROXY_NETWORK:-nginx-proxy-manager_default}   # la red de Docker de tu proxy
+    name: ${PROXY_NETWORK:-nginx-proxy-manager_default}   # your proxy's Docker network

@@ -1,39 +1,41 @@
 <div align="center">
 
-# 🧪 Laboratorio de nichos
+# 🧪 Niche Lab
 
-**Decide con datos si un nicho de YouTube vale la pena *antes* de crear el canal, y captura ideas desde el móvil sin abrir una terminal.**
+**Decide with data whether a YouTube niche is worth it *before* you create the channel — and capture ideas from your phone without opening a terminal.**
 
-[![MIT License](https://img.shields.io/badge/licencia-MIT-blue.svg)](LICENSE)
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Node.js 22](https://img.shields.io/badge/node-22-43853d.svg)](scripts)
-[![0 dependencias](https://img.shields.io/badge/dependencias-0-2ea44f.svg)](inbox/server.mjs)
+[![0 dependencies](https://img.shields.io/badge/dependencies-0-2ea44f.svg)](inbox/server.mjs)
 [![Docs](https://img.shields.io/badge/docs-KEIZAC%20TECH-black.svg)](https://keizactech.com/docs)
 
 </div>
 
 ---
 
-## ✨ Qué trae
+## ✨ What's inside
 
-| Pieza | Para qué |
+| Piece | What it's for |
 |---|---|
-| 🧮 **`scripts/validar-nicho.mjs`** | Pasa un nicho por **4 filtros** y da un veredicto: **ADELANTE**, **ACEPTABLE** o **NO LANZAR**. No negocia. |
-| 💡 **`scripts/banco-ideas.mjs`** | Candidatos de nicho y generador de ganchos de título. Sin cifras inventadas: son puntos de partida que debes validar. |
-| 📱 **`inbox/`** | Bandeja web para el móvil: guardar notas y transcripciones, añadir canales y ver el veredicto en vivo. |
-| 📁 **`plantilla/` + `nuevo-nicho.sh`** | Crea la carpeta de un canal nuevo, aislada, con su `CLAUDE.md` listo. |
+| 🧮 **`scripts/validar-nicho.mjs`** | Runs a niche through **4 filters** and gives a verdict: **GO**, **ACCEPTABLE** or **DON'T LAUNCH**. It doesn't negotiate. |
+| 💡 **`scripts/banco-ideas.mjs`** | Niche candidates and a title-hook generator. No made-up numbers: they're starting points you must validate. |
+| 📱 **`inbox/`** | A mobile web inbox: save notes and transcripts, add channels and see the verdict live. |
+| 📁 **`plantilla/` + `nuevo-nicho.sh`** | Creates an isolated folder for a new channel, with its own `CLAUDE.md` ready to go. |
 
-## 🧮 Los 4 filtros
+> The tool's output and inbox UI are in Spanish — it was built for Spanish-language channels — but the method works for any language.
 
-Un canal de referencia es **ganador** si:
-- tiene **≥ 1.000.000 vistas al mes** (o ≥ 500.000 si sus vídeos duran 20 min o más), y
-- su primer vídeo tiene **menos de 12 meses**.
+## 🧮 The 4 filters
 
-| Filtro | Qué pide |
+A reference channel is a **winner** if:
+- it gets **≥ 1,000,000 views a month** (or ≥ 500,000 if its videos run 20 min or longer), and
+- its first video is **less than 12 months old**.
+
+| Filter | What it requires |
 |---|---|
-| 1 + 2 | Al menos **5 canales ganadores** |
-| 3 | Todos los de referencia con **menos de 12 meses** |
-| 4 | Ganadores **en inglés**: de ahí se copia el formato que ya funciona |
-| + | Al menos **1 competidor en español**, para probar que hay demanda |
+| 1 + 2 | At least **5 winning channels** |
+| 3 | Every reference channel **under 12 months old** |
+| 4 | Winners **in English**: that's where you copy the format that already works |
+| + | At least **1 competitor in Spanish**, to prove there's demand |
 
 ```bash
 node scripts/validar-nicho.mjs nichos-ejemplo/ejemplo.json
@@ -42,51 +44,55 @@ node scripts/validar-nicho.mjs nichos-ejemplo/ejemplo.json
 VEREDICTO
   NO LANZAR — Faltan 2 canales ganadores. Busca más canales o haz otro doble clic en el tema. NO bajes el umbral.
 ```
+*(DON'T LAUNCH — 2 winning channels missing. Find more channels or drill one level deeper into the topic. DON'T lower the bar.)*
 
-Los datos de cada canal los sacas tú, a mano, de **VidIQ** o **Social Blade**. Mira el formato en [`nichos-ejemplo/ejemplo.json`](nichos-ejemplo/ejemplo.json).
+You collect each channel's data yourself, by hand, from **VidIQ** or **Social Blade**. See the format in [`nichos-ejemplo/ejemplo.json`](nichos-ejemplo/ejemplo.json).
 
-## 📱 La bandeja (inbox)
+## 📱 The inbox
 
 ```mermaid
 flowchart LR
-    M((Tu móvil)) -->|HTTPS| P[Tu proxy]
-    P --> A[oauth2-proxy<br/>login de Google + lista de correos]
-    A -->|red interna, sin internet| I[inbox<br/>Node sin dependencias]
-    I --> N[(notas/ y nichos/)]
-    N --> C[Claude Code o Codex<br/>trabajan sobre lo capturado]
+    M((Your phone)) -->|HTTPS| P[Your proxy]
+    P --> A[oauth2-proxy<br/>Google login + email list]
+    A -->|internal network, no internet| I[inbox<br/>zero-dependency Node]
+    I --> N[(notas/ and nichos/)]
+    N --> C[Claude Code or Codex<br/>work on what you captured]
 ```
 
-**Seguridad por diseño:**
-- **No hay terminal detrás.** El servidor solo lista, guarda notas, guarda canales y calcula el veredicto. No puede escribir fuera de `notas/` y `nichos/`.
-- La bandeja vive en una red Docker **`internal`**: sin puertos publicados y sin salida a internet. Solo el login puede hablarle.
-- Corre como usuario sin privilegios y con **cero dependencias npm**, así que no hay cadena de suministro que vigilar.
+**Secure by design:**
+- **There's no terminal behind it.** The server only lists, saves notes, saves channels and computes the verdict. It can't write outside `notas/` and `nichos/`.
+- The inbox lives on an **`internal`** Docker network: no published ports and no internet access. Only the login service can talk to it.
+- It runs as an unprivileged user with **zero npm dependencies**, so there's no supply chain to watch.
 
-### Levantarla
+### Run it
 ```bash
 git clone https://github.com/RosaritoRD/laboratorio-nichos.git
 cd laboratorio-nichos
-cp inbox/oauth.env.example inbox/oauth.env                 # rellena tu cliente OAuth de Google
-cp inbox/allowed-emails.example.txt inbox/allowed-emails.txt   # quién puede entrar
+cp inbox/oauth.env.example inbox/oauth.env                 # fill in your Google OAuth client
+cp inbox/allowed-emails.example.txt inbox/allowed-emails.txt   # who's allowed in
 docker compose -f inbox/docker-compose.yml up -d --build
 ```
-En tu proxy HTTPS apunta `yt.tu-dominio.com` a `yt-auth:4180`.
+In your HTTPS proxy, point `yt.your-domain.com` to `yt-auth:4180`.
 
-## 📁 Un canal nuevo en 1 comando
+## 📁 A new channel in 1 command
 ```bash
-./nuevo-nicho.sh oraciones-para-dormir
-cd oraciones-para-dormir && claude      # o: codex
+./nuevo-nicho.sh prayers-for-sleep
+cd prayers-for-sleep && claude      # or: codex
 ```
-Cada nicho tiene su carpeta y su `CLAUDE.md`, así el asistente no mezcla un canal con otro.
+Each niche gets its own folder and `CLAUDE.md`, so the assistant never mixes one channel with another.
 
-## 🤖 Con Claude Code o Codex
-Guarda desde el móvil una transcripción en la bandeja y luego, en la terminal: *"Lee la última nota de `notas/` y sácame 10 títulos para el nicho X"* o *"Valida `nichos/x.json` y dime qué canales faltan"*.
+## 🤖 With Claude Code or Codex
+Save a transcript to the inbox from your phone, then in the terminal: *"Read the latest note in `notas/` and give me 10 titles for niche X"* or *"Validate `nichos/x.json` and tell me which channels are missing."*
 
-## 💸 Ahorro y mejoras
-Ver **[AHORRO-Y-MEJORAS.md](AHORRO-Y-MEJORAS.md)**.
+## 💸 Savings and tips
+See **[SAVINGS-AND-TIPS.md](SAVINGS-AND-TIPS.md)**.
 
-## 📚 Más
-- Cuando el nicho pase los filtros, prodúcelo con **[Oraflow](https://github.com/RosaritoRD/oraflow)**
-- 📖 Guías: **[keizactech.com/docs](https://keizactech.com/docs)**
+## 🤝 Contributing
+Issues and PRs are welcome — look for the [`good first issue`](https://github.com/RosaritoRD/laboratorio-nichos/labels/good%20first%20issue) label and read [CONTRIBUTING.md](CONTRIBUTING.md).
 
-## 📄 Licencia
-MIT — ver [LICENSE](LICENSE).
+## 📚 More
+- Once a niche passes the filters, produce it with **[Oraflow](https://github.com/RosaritoRD/oraflow)**
+- 📖 Guides: **[keizactech.com/docs](https://keizactech.com/docs)**
+
+## 📄 License
+MIT — see [LICENSE](LICENSE).

@@ -1,2 +1,2 @@
-# Un correo por línea: quién puede entrar a la bandeja.
+# One email per line: who can access the inbox.
 tu-correo@gmail.com
