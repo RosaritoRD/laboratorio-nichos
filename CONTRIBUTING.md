@@ -12,7 +12,7 @@ Thanks for your interest! Issues, ideas and pull requests are all welcome — in
 
 ## Where to start
 
-- Issues labeled [`good first issue`](https://github.com/RosaritoRD/laboratorio-nichos/labels/good%20first%20issue) are small and self-contained.
+- Issues labeled [`good first issue`](https://github.com/RosaritoRD/niche-lab/labels/good%20first%20issue) are small and self-contained.
 - Not sure about an idea? Open an issue first and we'll talk it through.
 
 ## Working with an AI assistant

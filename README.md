@@ -65,7 +65,7 @@ flowchart LR
 
 ### Run it
 ```bash
-git clone https://github.com/RosaritoRD/laboratorio-nichos.git
+git clone https://github.com/RosaritoRD/niche-lab.git
 cd laboratorio-nichos
 cp inbox/oauth.env.example inbox/oauth.env                 # fill in your Google OAuth client
 cp inbox/allowed-emails.example.txt inbox/allowed-emails.txt   # who's allowed in
@@ -87,7 +87,7 @@ Save a transcript to the inbox from your phone, then in the terminal: *"Read the
 See **[SAVINGS-AND-TIPS.md](SAVINGS-AND-TIPS.md)**.
 
 ## 🤝 Contributing
-Issues and PRs are welcome — look for the [`good first issue`](https://github.com/RosaritoRD/laboratorio-nichos/labels/good%20first%20issue) label and read [CONTRIBUTING.md](CONTRIBUTING.md).
+Issues and PRs are welcome — look for the [`good first issue`](https://github.com/RosaritoRD/niche-lab/labels/good%20first%20issue) label and read [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## 📚 More
 - Once a niche passes the filters, produce it with **[Oraflow](https://github.com/RosaritoRD/oraflow)**
